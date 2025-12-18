@@ -47,6 +47,13 @@ export interface RoomSettings {
     gachaCategories?: TopicCategory[]; // 有効なガチャカテゴリ（未指定時は全対象）
 }
 
+// リアクションデータ
+export interface ReactionData {
+    emoji: string;
+    timestamp: number;
+    id: string;
+}
+
 // 部屋全体のデータ構造（Firestoreに保存されるルートオブジェクト）
 export interface Room {
     id: string;                // 部屋ID（ユーザー入力または自動生成）
@@ -58,7 +65,6 @@ export interface Room {
     createdAt: number;         // 作成日時（タイムスタンプ）
 
     // リアルタイム機能用データ
-    strokes?: any[];           // お絵かきデータの配列（型定義はCanvasOverlay参照）
-    latestReaction?: any;      // 最新のリアクション情報（同期トリガー用）
+    latestReaction?: ReactionData;      // 最新のリアクション情報（同期トリガー用）
     latestExtension?: number;  // タイマー延長トリガー（タイムスタンプ）
 }

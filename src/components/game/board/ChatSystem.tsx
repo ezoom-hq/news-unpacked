@@ -1,9 +1,9 @@
-
 import React, { useState, useEffect, useRef } from 'react';
-import { db } from '../../services/firebase';
-import { collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, where } from 'firebase/firestore';
-import { ChatMessage } from '../../types/game';
+import { collection, addDoc, query, orderBy, onSnapshot, serverTimestamp } from 'firebase/firestore';
 import { motion } from 'framer-motion';
+
+import { db } from '../../../services/firebase';
+import { ChatMessage } from '../../../types/game';
 
 interface ChatSystemProps {
     roomId: string;

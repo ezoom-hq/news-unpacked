@@ -1,5 +1,5 @@
 import React from 'react';
-import { Topic } from '../../types/game';
+import { Topic } from '../../../types/game';
 import { motion } from 'framer-motion';
 
 interface TopicCardProps {
