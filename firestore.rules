@@ -1,0 +1,14 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Rooms: Anyone can create (lobby), read, or update if they know the ID.
+    // In a real production app, we would use Auth to restrict this further.
+    // For this prototype/MVP without login:
+    // - Allow read/write to anyone (Public)
+    // - Ideally, we could restrict updates to "only adding to arrays" or specific fields, 
+    //   but for a game state that changes frequently by host, open access with obscure IDs is the tradeoff.
+    match /rooms/{roomId} {
+      allow read, write: if true;
+    }
+  }
+}
