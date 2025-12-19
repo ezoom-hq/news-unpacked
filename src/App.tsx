@@ -5,7 +5,7 @@ import { Toaster } from 'react-hot-toast';
 
 function App() {
     return (
-        <BrowserRouter>
+        <BrowserRouter basename={import.meta.env.BASE_URL}>
             <Toaster
                 position="top-center"
                 toastOptions={{
