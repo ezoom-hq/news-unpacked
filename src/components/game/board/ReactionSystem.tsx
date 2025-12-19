@@ -13,6 +13,9 @@ import { onSnapshot, doc, updateDoc } from 'firebase/firestore';
 export const ReactionSystem: React.FC<{ roomId: string }> = ({ roomId }) => {
     const [reactions, setReactions] = useState<{ id: string, emoji: string, x: number }[]>([]);
 
+    // 処理済みのリアクションIDを記録（再レンダリング時の重複再生防止）
+    const lastProcessedIdRef = React.useRef<string | null>(null);
+
     // Firestoreの変更を監視
     useEffect(() => {
         const unsub = onSnapshot(doc(db, 'rooms', roomId), (snapshot) => {
@@ -23,9 +26,19 @@ export const ReactionSystem: React.FC<{ roomId: string }> = ({ roomId }) => {
             if (data.latestReaction) {
                 const { emoji, timestamp, id } = data.latestReaction;
 
-                // ユニークIDを使って重複排除しつつ、新しいリアクションを追加
-                const uniqueId = id || timestamp;
+                // ユニークIDを使って重複排除
+                const uniqueId = id || String(timestamp);
+
+                // 既に処理済みのIDならスキップ（これが他フィールド更新時の再発火を防ぐ）
+                if (lastProcessedIdRef.current === uniqueId) return;
+
+                // 古すぎるリアクション（5秒以上前）はスキップ（初期ロード時などの誤爆防止）
+                if (Date.now() - timestamp > 5000) return;
+
+                lastProcessedIdRef.current = uniqueId;
+
                 setReactions(prev => {
+                    // 念のためState内もチェック
                     if (prev.find(r => r.id === uniqueId)) return prev;
                     // x座標の中心からのランダムオフセット（-20vw 〜 +20vw）を計算
                     return [...prev, { id: uniqueId, emoji, x: (Math.random() - 0.5) * 40 }];
