@@ -13,6 +13,7 @@ export const Welcome: React.FC = () => {
     // ローディングとエラー状態
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
+    const [isLaunching, setIsLaunching] = useState(false);
 
     // 新しいルームを作成するハンドラ
     const handleCreateRoom = async () => {
@@ -79,10 +80,46 @@ export const Welcome: React.FC = () => {
                             <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 animate-gradient-x drop-shadow-lg">
                                 News Unpacked
                             </span>
+
+
                             <motion.span
-                                animate={{ rotate: [0, 10, -10, 0] }}
-                                transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
-                                className="absolute -top-6 -right-8 text-4xl"
+                                animate={isLaunching ? {
+                                    // x,y: 配列にするとキーフレームアニメーションになります。
+                                    // 最初〜最後までの値を細かく指定して「震え」を作っています。
+                                    // [0, -20, 20, ...] : 0から始まって、左(-20)・右(20)に交互に動く
+                                    // 最後の値(1500, -1500)が「発射して飛んでいく位置」です。
+                                    x: [0, -20, 20, -30, 30, -20, 20, -30, 30, -20, 20, -10, 10, 0, 1500],
+                                    y: [0, -20, 20, -30, 30, -20, 20, -30, 30, -20, 20, -10, 10, 0, -1500],
+
+                                    // rotate: 回転。現在はすべて0（回転なし）にしています。
+                                    rotate: Array(15).fill(0),
+
+                                    // scale: 大きさ。現在はほぼ1ですが、最後だけ0（消える）にしています。
+                                    scale: [...Array(14).fill(1), 0],
+                                    // opacity: 透明度。最後だけ0（透明）にして消します。
+                                    opacity: [...Array(14).fill(1), 0]
+                                } : {
+                                    // 通常時のゆらゆらアニメーション
+                                    rotate: [0, 10, -10, 0],
+                                    y: 0
+                                }}
+                                transition={isLaunching ? {
+                                    duration: 4.0, // 全体のアニメーション時間（秒）
+
+                                    // times: 各キーフレームのタイミング（0〜1の割合）
+                                    // 0.5（全体の50% = 2秒地点）まで震えて、そこから発射します。
+                                    // この数値をいじると「震える時間」と「飛んでいく時間」の配分が変わります。
+                                    times: [0, 0.04, 0.08, 0.12, 0.16, 0.20, 0.24, 0.28, 0.32, 0.36, 0.40, 0.44, 0.48, 0.5, 1],
+
+                                    ease: "easeIn" // 加速しながら動く
+                                } : {
+                                    duration: 2,
+                                    repeat: Infinity,
+                                    repeatDelay: 3
+                                }}
+                                onClick={() => setIsLaunching(true)}
+                                className="absolute -top-6 -right-8 text-4xl cursor-pointer hover:scale-125 transition-transform"
+                                style={{ display: 'inline-block' }} // Transform requires block/inline-block
                             >
                                 🚀
                             </motion.span>
