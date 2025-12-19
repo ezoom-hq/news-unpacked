@@ -128,7 +128,7 @@ export const Welcome: React.FC = () => {
                                     repeatDelay: 3
                                 }}
                                 onClick={() => setIsLaunching(true)}
-                                className="absolute -top-6 -right-8 text-4xl cursor-pointer hover:scale-125 transition-transform"
+                                className="absolute -top-6 -right-7 text-4xl cursor-pointer hover:scale-125 transition-transform"
                                 style={{ display: 'inline-block' }} // Transform requires block/inline-block
                             >
                                 🚀
@@ -223,7 +223,7 @@ export const Welcome: React.FC = () => {
                 transition={{ delay: 1 }}
                 className="mt-6 text-white/40 text-xs font-mono tracking-widest"
             >
-                v1.0.0 • DESIGNED FOR DISCOVERY
+                v1.0.1 • DESIGNED FOR DISCOVERY
             </motion.div>
         </div>
     );
