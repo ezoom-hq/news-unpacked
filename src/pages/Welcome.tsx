@@ -6,7 +6,17 @@ import { CyberBackground } from '../components/ui/CyberBackground';
 // ウェルカム画面（トップページ）コンポーネント
 export const Welcome: React.FC = () => {
     // ユーザー名とルームIDの入力状態管理
-    const [username, setUsername] = useState('');
+    const [username, setUsername] = useState(() => {
+        const stored = localStorage.getItem('neun_player');
+        if (stored) {
+            try {
+                return JSON.parse(stored).name || '';
+            } catch (e) {
+                return '';
+            }
+        }
+        return '';
+    });
     const [roomId, setRoomId] = useState('');
     const navigate = useNavigate();
 
@@ -147,8 +157,9 @@ export const Welcome: React.FC = () => {
                             type="text"
                             value={username}
                             onChange={(e) => setUsername(e.target.value)}
+                            maxLength={10}
                             className="input-field bg-white/5 border-white/10 rounded-xl py-3 px-4 focus:ring-2 focus:ring-indigo-500/50 transition-all"
-                            placeholder="名前を入力"
+                            placeholder="名前を入力 (10文字まで)"
                         />
                     </div>
 
@@ -186,9 +197,10 @@ export const Welcome: React.FC = () => {
                             <input
                                 type="text"
                                 value={roomId}
-                                onChange={(e) => setRoomId(e.target.value)}
+                                onChange={(e) => setRoomId(e.target.value.toUpperCase())}
                                 className="input-field !pl-8 pr-28 bg-white/5 border-white/10 rounded-xl py-4"
-                                placeholder="Room ID"
+                                placeholder="ROOM ID"
+                                maxLength={6}
                             />
                             <motion.button
                                 whileHover={{ scale: 1.05 }}

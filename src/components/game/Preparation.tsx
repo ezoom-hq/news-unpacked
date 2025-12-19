@@ -237,14 +237,14 @@ export const Preparation: React.FC<PreparationProps> = ({ room, currentPlayerId 
                             <button
                                 onClick={() => openMaskModal(idx)}
                                 disabled={!text.trim()}
-                                className={`px-4 py-2 rounded font-bold transition whitespace-nowrap
+                                className={`px-2 md:px-4 py-2 rounded font-bold transition text-xs md:text-base
                                     ${masks[idx]
                                         ? 'bg-green-600 text-white border border-green-500' // Has mask
                                         : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
                                     }
                                 `}
                             >
-                                {masks[idx] ? '伏せ字編集済' : '伏せ字を作る'}
+                                {masks[idx] ? '伏せ字済' : '伏せ字'}
                             </button>
                         </div>
                     </div>
@@ -269,12 +269,12 @@ export const Preparation: React.FC<PreparationProps> = ({ room, currentPlayerId 
 
             {/* Mask Editor Modal Overlay */}
             {activeMaskIndex !== null && masks[activeMaskIndex] && (
-                <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
-                    <div className="bg-gray-800 border border-gray-700 rounded-2xl p-8 max-w-2xl w-full shadow-2xl">
-                        <h3 className="text-2xl font-bold mb-4 text-center">伏せ字を作成</h3>
-                        <p className="text-center text-gray-400 mb-8">クリックして隠したり表示したりできます。</p>
+                <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
+                    <div className="bg-gray-800 border border-gray-700 rounded-2xl p-6 md:p-8 max-w-2xl w-full shadow-2xl max-h-[90vh] overflow-y-auto">
+                        <h3 className="text-xl md:text-2xl font-bold mb-4 text-center">伏せ字を作成</h3>
+                        <p className="text-center text-gray-400 mb-6 md:mb-8 text-sm md:text-base">クリックして隠したり表示したりできます。</p>
 
-                        <div className="flex flex-wrap gap-1 justify-center text-3xl font-bold leading-relaxed mb-8 bg-black/30 p-8 rounded-xl min-h-[150px] items-center">
+                        <div className="flex flex-wrap gap-1 justify-center text-2xl md:text-3xl font-bold leading-relaxed mb-6 md:mb-8 bg-black/30 p-4 md:p-8 rounded-xl min-h-[100px] md:min-h-[150px] items-center">
                             {masks[activeMaskIndex].map(t => (
                                 <span
                                     key={t.id}
@@ -291,7 +291,7 @@ export const Preparation: React.FC<PreparationProps> = ({ room, currentPlayerId 
 
                         <button
                             onClick={() => setActiveMaskIndex(null)}
-                            className="w-full bg-green-600 hover:bg-green-500 text-white font-bold py-4 rounded-xl transition"
+                            className="w-full bg-green-600 hover:bg-green-500 text-white font-bold py-3 md:py-4 rounded-xl transition sticky bottom-0 shadow-lg"
                         >
                             完了
                         </button>
