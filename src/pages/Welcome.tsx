@@ -223,7 +223,7 @@ export const Welcome: React.FC = () => {
                 transition={{ delay: 1 }}
                 className="mt-6 text-white/40 text-xs font-mono tracking-widest"
             >
-                v1.0.1 • DESIGNED FOR DISCOVERY
+                v1.0.2 • DESIGNED FOR DISCOVERY
             </motion.div>
         </div>
     );

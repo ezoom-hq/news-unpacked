@@ -67,4 +67,8 @@ export interface Room {
     // リアルタイム機能用データ
     latestReaction?: ReactionData;      // 最新のリアクション情報（同期トリガー用）
     latestExtension?: number;  // タイマー延長トリガー（タイムスタンプ）
+
+    // Timer sync & Topic logic
+    timerEndTime?: number;      // タイマー終了予定時刻 (Unix Timestamp, ms)
+    usedTopics?: string[];     // 使用済み（ガチャで排出済み）のトピック文字列リスト
 }

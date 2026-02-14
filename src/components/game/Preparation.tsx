@@ -64,14 +64,29 @@ export const Preparation: React.FC<PreparationProps> = ({ room, currentPlayerId 
 
     // ランダムなお題を自動入力する
     const fillRandom = (index: number) => {
-        handleInputChange(index, getRandomTopic(room.settings?.gachaCategories));
+        // 現在の入力済み、かつ提出済みのトピック、並びに過去の使用済みトピックを除外
+        const currentInputs = inputs.filter(s => s.trim() !== '');
+        const submittedTopics = room.topics.map(t => t.originalText);
+        const pastUsedTopics = room.usedTopics || [];
+        const excludeList = [...new Set([...currentInputs, ...submittedTopics, ...pastUsedTopics])];
+
+        handleInputChange(index, getRandomTopic(room.settings?.gachaCategories, excludeList));
     };
 
     // 空欄の箇所をすべてランダムなお題で埋める
     const fillAllRandom = () => {
         const newInputs = [...inputs];
+        const submittedTopics = room.topics.map(t => t.originalText);
+        const pastUsedTopics = room.usedTopics || [];
+
+        // 逐次的に埋めていくことで、1回のfillAll内で重複しないようにする
         newInputs.forEach((val, i) => {
-            if (!val.trim()) newInputs[i] = getRandomTopic(room.settings?.gachaCategories);
+            if (!val.trim()) {
+                // その時点での入力済みリストを除外対象にする
+                const currentFilled = newInputs.filter(s => s.trim() !== '');
+                const excludeList = [...new Set([...currentFilled, ...submittedTopics, ...pastUsedTopics])];
+                newInputs[i] = getRandomTopic(room.settings?.gachaCategories, excludeList);
+            }
         });
         setInputs(newInputs);
     };

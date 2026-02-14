@@ -8,6 +8,7 @@ interface BoardHeaderProps {
     onExtendTimer: () => void;
     onBackToSelection: () => void;
     onFinishGame: () => void;
+    onRandomPick?: () => void;
 }
 
 /**
@@ -19,7 +20,8 @@ export const BoardHeader: React.FC<BoardHeaderProps> = ({
     isHost,
     onExtendTimer,
     onBackToSelection,
-    onFinishGame
+    onFinishGame,
+    onRandomPick
 }) => {
     return (
         <header className="flex-none z-50 w-full bg-gray-900/80 backdrop-blur-md border-b border-white/10 shadow-lg">
@@ -47,9 +49,9 @@ export const BoardHeader: React.FC<BoardHeaderProps> = ({
                     {room.status === 'discussion' && (
                         <div className="scale-75 md:scale-100 origin-center">
                             <Timer
+                                targetTime={room.timerEndTime}
                                 initialSeconds={room.settings?.discussionTime || 180}
                                 isRunning={true}
-                                triggerExtension={room.latestExtension}
                             />
                         </div>
                     )}
@@ -59,6 +61,16 @@ export const BoardHeader: React.FC<BoardHeaderProps> = ({
                 <div className="flex items-center justify-end gap-1 md:gap-2">
                     {isHost && (
                         <>
+                            {room.status === 'selection' && (
+                                <button
+                                    onClick={onRandomPick}
+                                    className="px-2 py-1.5 rounded bg-purple-600/50 hover:bg-purple-600 text-purple-100 text-[10px] md:text-xs font-bold border border-purple-400/30 whitespace-nowrap flex items-center gap-1"
+                                >
+                                    <span>🎲</span>
+                                    <span className="hidden md:inline">お任せ</span>
+                                </button>
+                            )}
+
                             {room.status === 'discussion' && (
                                 <>
                                     <button

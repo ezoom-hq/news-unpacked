@@ -23,10 +23,14 @@ export const Board: React.FC<BoardProps> = ({ room, isHost, playerId }) => {
     const handleSelectTopic = async (topicId: string) => {
         if (!isHost) return;
         const roomRef = doc(db, 'rooms', room.id);
+        const duration = room.settings?.discussionTime || 180;
+        // サーバー時刻ベースで終了予定時刻を計算
+        const timerEndTime = Date.now() + duration * 1000;
 
         await updateDoc(roomRef, {
             status: 'discussion',     // ステータスを議論中に変更
             currentTopicId: topicId,  // 選択されたお題IDをセット
+            timerEndTime: timerEndTime
         });
     };
 
@@ -63,10 +67,27 @@ export const Board: React.FC<BoardProps> = ({ room, isHost, playerId }) => {
         });
     }
 
+    // 未使用のお題からランダムに1つ選んで開始するハンドラ
+    const handleRandomPick = async () => {
+        if (!isHost) return;
+        const unrevealedTopics = room.topics.filter(t => !t.isRevealed);
+        if (unrevealedTopics.length === 0) return;
+
+        const randomIndex = Math.floor(Math.random() * unrevealedTopics.length);
+        const selectedTopic = unrevealedTopics[randomIndex];
+        await handleSelectTopic(selectedTopic.id);
+    };
+
     const handleExtendTimer = async () => {
         if (!isHost) return;
+
+        const currentEnd = room.timerEndTime || Date.now();
+        // 残り時間がある場合はそこから+60、切れている場合は現在時刻+60
+        const base = Math.max(Date.now(), currentEnd);
+        const newEndTime = base + 60000;
+
         await updateDoc(doc(db, 'rooms', room.id), {
-            latestExtension: Date.now()
+            timerEndTime: newEndTime
         });
     };
 
@@ -82,6 +103,7 @@ export const Board: React.FC<BoardProps> = ({ room, isHost, playerId }) => {
                 onExtendTimer={handleExtendTimer}
                 onBackToSelection={handleBackToSelection}
                 onFinishGame={handleFinishGame}
+                onRandomPick={handleRandomPick}
             />
 
             {/* Main Content: Flex-1 (Takes remaining space), Min-H-0 (Allow shrink), Scrollable inside if needed */}
